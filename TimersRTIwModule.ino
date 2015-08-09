@@ -1,5 +1,5 @@
 /*********************************************************************************************************/
-https://www.youtube.com/watch?v=x7knaKxkpCM
+//https://www.youtube.com/watch?v=x7knaKxkpCM
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -27,16 +27,20 @@ void setup(){
 cli(); //Desabilitar interrupciones globales mientras configuramos el timer
 TCCR1A=0x00;  //Ver Pagina 96 del datasheet.
 TCCR1B=0x00;  //Ver Pagina 98 del datasheet.
-TIMSK  |=(1<<TOIE1); //Ver pagina 72 del datasheet y definicion de mascaras en la libreria.
-TCCR1B |= (1<<CS10); //Ver pagina 98 del datasheet y definicion de mascaras en la libreria.
+TIMSK  |=(1<<TOIE1); //HABILITO INTERRUPCION DEL TIMER. Ver pagina 72 del datasheet y definicion de mascaras en la libreria.
+TCCR1B |= (1<<CS10); //SELECCIONO PRESCALER. Ver pagina 98 del datasheet y definicion de mascaras en la libreria.
+//TCCR1B |= (1<<CS11);
+//TCCR1B |= (1<<CS12);
+OCR1A = 1000 ;          //REGISTRO DE COMPARACION DEL TIMER, para comparacion para el overflow. Ver pagina 99 del datasheet.
+TCCR1B |= ( 1<<WGM12 ); //HABILITO MODULO DE COMPARACION EN EL TIMER. Ver pagina 97 del datasheet
 sei();  //Habliltar interrupciones globales
 /********************************************************************************************************/
-//Variable linitializations and programm initializations goes here....
+//Variable linitializations and programm inizialization goes here....
 
 }
 
 void loop(){
-//Infinite loop programm goes here...
+//Infinite loop goes here...
 
 }
 
@@ -44,7 +48,7 @@ void loop(){
 
 
 /**************************************** RTI ***********************************************************/
-ISR(TIMER1_OVF_vect){
+ISR(TIMER1_CMPA_vect){
 // ISR codes goes here
 
 }
