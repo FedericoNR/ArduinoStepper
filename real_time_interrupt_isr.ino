@@ -4,51 +4,52 @@
 #include <avr/interrupt.h>
 
 
+#define ISR1_FREC  10
+int isr1_counter = 0;
 
-int N = 10;
-int n=0;
-int Ledstate=0;
+bool ledstate = false ;
 
 void setup(){
-/************************************** Timer configuration ****************************************/ 
+  /************************************** Timer configuration ****************************************/ 
   cli(); //Desabilitar interrupciones globales mientras configuramos el timer
   TCCR1A=0x00;  //Ver Pagina 96 del datasheet.
   TCCR1B=0x00;  //Ver Pagina 98 del datasheet.
   TIMSK1  |=(1<<TOIE1); //Ver pagina 72 del datasheet y definicion de mascaras en la libreria.
   TCCR1B |= (1<<CS10); //Ver pagina 98 del datasheet y definicion de mascaras en la libreria.
   sei();  //Habliltar interrupciones globales
-/*********************************************************************************************** ***/
-  Ledstate=0;
+/***************************************************************************************************/
   pinMode(LED_BUILTIN, OUTPUT);
-
 }
 
 void loop(){
-  
-  
+// Loop code goes here.
 
-
-
+  //Nothing in the main loop yet.  
 }
 
-void toogleled(void){
- n++;
- if (n>N){
-   if(Ledstate==0){
-     digitalWrite(LED_BUILTIN, HIGH);
-     Ledstate=1;
-   }
-   else{
-     digitalWrite(LED_BUILTIN, LOW);
-     Ledstate=0;
-   }
-   n=0;  
+/************************************** Sample fnc ****************************************/
+
+void ToogleBuiltinLed(void){
+//Toogles builtin Led
+  digitalWrite( LED_BUILTIN,  ledstate );
+  ledstate = ~ledstate;
+}
+
+/************************************** Real Time Service 1 ****************************************/
+void Isr1(void){
+//Simple ISR. ISR routines running on the periodic iterrupt routine must always 
+//be void fnc.
+// This example toogles the builtin every ISR1_FREC times  
+ isr1Counter++;
+ if ( isr1Counter > ISR1_FREC ){
+   ToogleBuiltinLed();
+   isr1Counter=0;  
  }
 }
 
 /************************************** Real Time Interrupt ****************************************/
 ISR(TIMER1_OVF_vect){
   //Code for ISR 's goes here
-  toogleled();
+  Isr1();
 }
 /************************************** Real Time Interrupt ****************************************/
